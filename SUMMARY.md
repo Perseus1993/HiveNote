@@ -11,4 +11,6 @@
 * [Hive-函数](6.md)
 * [压缩&存储](7.md)
 * [调优](8.md)
-
+* [flume](flumeMain.md)
+    - [flume入门](flume.md)
+    - [flume进阶](flume2.md)
