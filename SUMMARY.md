@@ -15,3 +15,5 @@
 * [flume](flumeMain.md)
     - [flume入门](flume.md)
     - [flume进阶/企业开发案例](flume2.md)
+* [Kafka](kafkaMain.md)
+    - [kafka入门](kafka2.md)
