@@ -139,29 +139,43 @@ bin/kafka-console-consumer.sh --bootstrap-server hadoop102:9092 --topic first
 
 查看topic详情
 `bin/kafka-topics.sh --zookeeper hadoop102:2181 --describe --topic first`
-#工作流程
-轮询给broker
-每个partition一个offset
+#架构深入
+<hr style="height:1px;border:none;border-top:1px solid #555555;" />
+####工作流程
+topic是逻辑上的，partition是物理上的，每个partition对应一个log文件用来存储消息，生产的数据不断追加到log文件
 
+为了增加log文件的查找效率，将每个partion分成多个segment，每个segment有index和log文件
+<img src = 'img/k5.png'/>
 
-#生产者
+简单来说，通过index的名字定位需要查找哪个index文件，进到index文件之后再去查找对应的offset的位置
+比如上图想找offset是8的消息的位置，先通过index文件名确定要在00000006.index找，再通过（8-6 = 2）找到326，最终知道在segment2的326位置开始就是消息开始的地方
+
+####生产者
 分区策略
-扩展
-高并发
+1.分区的原因
+扩展：通过调整partition大小来适应不同的集群
 
+2.高并发
 
 分区的原则
-指定partition
-没指定partition ,给了key 用hashcode
-都没给就给一个自增的随机数%分区数
 
-#数据可靠性的保证
-每个partition收到数据都会反馈ack，否则生产者重发
+需要将producer发送的数据封装成一个ProducerRecord对象。
+
+指定partition
+
+没指定partition,给了key，那就用key的hashcode和partition数量取余
+
+什么都没给，就用一个自增的随机数和partition数量取余
+
+####数据可靠性的保证
+
+每个partition收到生产者给的数据都会反馈ack，否则生产者重发
 全部follower收到数据后再发送ack
 为了保证个别floower挂掉后没法ack,用ISR
 新版的差值已经remove了
 
-应答机制：0 不用等broker ack
+应答机制：
+0 不用等broker ack
 1等ack leader成功就ack
 -1 等待全部落盘
 
@@ -173,7 +187,229 @@ HW 最小的东西 消费者能见到的
 
 挂了的后面就是丢了
 
-# 分区分配策略
+# 消费者
+<hr style="height:1px;border:none;border-top:1px solid #555555;" />
+consumer采用pull模式从broker中读取数据，Kafka的消费者在消费数据时会传入一个时长参数timeout，如果当前没有数据可供消费，consumer会等待一段时间之后再返回，这段时长即为timeout
+
+分区分配策略
 range——robin 一个组的消费者订阅的主题应该是一样的 组为单位
 
 range topic为单位
+
+offset的维护
+
+##消费者API
+
+#### 消息发送流程
+<img src = 'img/k4.png'/>
+Producer发送消息采用的是异步发送的方式。在消息发送的过程中，涉及到了两个线程两个线程main,sender和一个线程共享变量recordAccumulator（缓冲区）。main往缓冲区里面送，sender去拿消息再给broker
+相关参数：
+batch.size 累积到特定大小，sender发送数据
+linger.ms  累积到特定时间，sender发送数据
+
+####异步发送API
+
+
+maven导包
+```
+<dependency>
+<groupId>org.apache.kafka</groupId>
+<artifactId>kafka-clients</artifactId>
+<version>0.11.0.0</version>
+</dependency>
+```
+<ul>
+<li>KafkaProducer：需要创建一个生产者对象，用来发送数据</li>
+<li>ProducerConfig：获取所需的一系列配置参数</li>
+<li>ProducerRecord：每条数据都要封装成一个ProducerRecord对象</li>
+</ul>
+
+下面写下这个自定义生产者,写之前想好几点
+
+1 和linux上的Kafka集群连起来
+
+2 自定义消息的序列化以及封装成ProducerRecord，才能由KafkaProducer发送出去
+
+3 运行前开好zookeeper和kafka集群
+
+4 linux记得打开一个消费者接收数据
+
+```
+public class CustomProducer {
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        Properties props = new Properties();
+
+        //kafka集群，broker-list
+        props.put("bootstrap.servers", "hadoop102:9092");
+
+        props.put("acks", "all");
+
+        //重试次数
+        props.put("retries", 1);
+
+        //批次大小
+        props.put("batch.size", 16384);
+
+        //等待时间
+        props.put("linger.ms", 1);
+
+        //RecordAccumulator缓冲区大小
+        props.put("buffer.memory", 33554432);
+
+        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+
+        Producer<String, String> producer = new KafkaProducer<>(props);
+
+        for (int i = 0; i < 100; i++) {
+            producer.send(new ProducerRecord<String, String>("first", "perseus" + i);
+        }
+
+        producer.close();
+    }
+}
+```
+
+
+控制台消费者打印出来消息了
+<img src = 'img/k7.png'/>
+
+上面的配置信息，包含的东西挺多，报错了耐心看下，笔者就拼错了好几处
+
+而且，在put中输入ProducerConfig.后，那些可以配置的东西就都弹出来了
+<img src = 'img/k6.png'/>
+
+#### 同步发送API
+
+一条消息发出后会阻塞线程，直至返回ack
+
+```java
+public class customProducer2 {
+    public static void main(String[] args) throws Exception{
+        Properties prop = new Properties();
+        prop.put("bootstrap.servers", "hadoop102:9092");
+        prop.put("acks", "all");
+        prop.put("retries", 1);
+        prop.put("batch.size", 16384);
+        prop.put("linger.ms", 1);
+        prop.put("buffer.memory", 33554432);
+        prop.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        prop.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+
+        Producer<String, String> producer = new KafkaProducer<String, String>(prop);
+        for (int i = 0; i < 10; i++){
+            producer.send(new ProducerRecord<String, String>("first", "kevin" + i)).get();
+        }
+        producer.close();
+
+    }
+}
+```
+
+# 生产者
+<hr style="height:1px;border:none;border-top:1px solid #555555;" />
+消费数据时的可靠性是很容易保证的，因为数据在Kafka中是持久化的，故不用担心数据丢失问题。由于consumer在消费过程中可能会出现断电宕机等故障，consumer恢复后，需要从故障前的位置的继续消费，所以consumer需要实时记录自己消费到了哪个offset，以便故障恢复后继续消费。所以offset的维护是Consumer消费数据是必须考虑的问题
+
+####自动提交offset
+
+<ul>
+<li>KafkaConsumer：消费者对象</li>
+<li>ConsumerConfig：获取所需的一系列配置参数</li>
+<li>ConsuemrRecord：每条数据都要封装成一个ConsumerRecord对象</li>
+<li>enable.auto.commit：是否开启自动提交offset功能</li>
+<li>auto.commit.interval.ms：自动提交offset的时间间隔</li>
+</ul>
+
+下面是代码
+```java
+public class CustomConsumer {
+
+public static void main(String[] args) {
+
+        Properties props = new Properties();
+
+        props.put("bootstrap.servers", "hadoop102:9092");
+
+        props.put("group.id", "test");
+
+        props.put("enable.auto.commit", "true");
+
+        props.put("auto.commit.interval.ms", "1000");
+
+        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+
+        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
+
+        consumer.subscribe(Arrays.asList("first"));
+
+        while (true) {
+
+            ConsumerRecords<String, String> records = consumer.poll(100);
+
+            for (ConsumerRecord<String, String> record : records)
+
+                System.out.printf("offset = %d, key = %s, value = %s%n", record.offset(), record.key(), record.value());
+        }
+    }
+}
+```
+
+#### 手动提交offset
+
+同步提交：
+
+先关一下自动提交offset`props.put("enable.auto.commit", "false");`
+
+提交后加一句`consumer.commitSync();`就行
+
+
+异步提交：虽然同步提交offset更可靠一些，但是由于其会阻塞当前线程，直到提交成功。因此吞吐量会收到很大的影响。因此更多的情况下，会选用异步提交offset的方式
+```java
+public class CustomConsumer {
+
+    public static void main(String[] args) {
+
+        Properties props = new Properties();
+
+        //Kafka集群
+        props.put("bootstrap.servers", "hadoop102:9092");
+
+        //消费者组，只要group.id相同，就属于同一个消费者组
+        props.put("group.id", "test");
+
+        //关闭自动提交offset
+        props.put("enable.auto.commit", "false");
+
+        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+
+        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
+        consumer.subscribe(Arrays.asList("first"));//消费者订阅主题
+
+        while (true) {
+            ConsumerRecords<String, String> records = consumer.poll(100);//消费者拉取数据
+            for (ConsumerRecord<String, String> record : records) {
+                System.out.printf("offset = %d, key = %s, value = %s%n", record.offset(), record.key(), record.value());
+            }
+
+//异步提交
+            consumer.commitAsync(new OffsetCommitCallback() {
+                @Override
+                public void onComplete(Map<TopicPartition, OffsetAndMetadata> offsets, Exception exception) {
+                    if (exception != null) {
+                        System.err.println("Commit failed for" + offsets);
+                    }
+                }
+            });
+        }
+    }
+}
+```
+
+#### 自定义offset
+
+#### 自定义interceptor
+
+interceptor可以在消息发出去按进行一些个性化定制， 比如时间戳等待，多个interceptor组成了拦截链
