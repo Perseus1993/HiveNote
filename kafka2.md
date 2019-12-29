@@ -413,3 +413,81 @@ public class CustomConsumer {
 #### 自定义interceptor
 
 interceptor可以在消息发出去按进行一些个性化定制， 比如时间戳等待，多个interceptor组成了拦截链
+
+Intercetpor的实现接口是org.apache.kafka.clients.producer.ProducerInterceptor，其定义的方法包括：
+（1）configure(configs)
+获取配置信息和初始化数据时调用。
+（2）onSend(ProducerRecord)：
+该方法封装进KafkaProducer.send方法中，即它运行在用户主线程中。Producer确保在消息被序列化以及计算分区前调用该方法。用户可以在该方法中对消息做任何操作，但最好保证不要修改消息所属的topic和分区，否则会影响目标分区的计算。
+（3）onAcknowledgement(RecordMetadata, Exception)：
+该方法会在消息从RecordAccumulator成功发送到Kafka Broker之后，或者在发送过程中失败时调用。并且通常都是在producer回调逻辑触发之前。onAcknowledgement运行在producer的IO线程中，因此不要在该方法中放入很重的逻辑，否则会拖慢producer的消息发送效率。
+（4）close：
+关闭interceptor，主要用于执行一些资源清理工作
+
+
+# 为什么flume对接kafka
+
+flume不灵活，flume作为生产者，不同消息类型直接写在kafka topic中。kafka随便加消费者
+配置一个flum-kafka.conf 监控flume的Log文件
+```
+# define
+a1.sources = r1
+a1.sinks = k1
+a1.channels = c1
+
+# source
+a1.sources.r1.type = exec
+a1.sources.r1.command = tail -F -c +0 /opt/module/data/flume.log
+a1.sources.r1.shell = /bin/bash -c
+
+# sink
+a1.sinks.k1.type = org.apache.flume.sink.kafka.KafkaSink
+a1.sinks.k1.kafka.bootstrap.servers = hadoop102:9092,hadoop103:9092,hadoop104:9092
+a1.sinks.k1.kafka.topic = first
+a1.sinks.k1.kafka.flumeBatchSize = 20
+a1.sinks.k1.kafka.producer.acks = 1
+a1.sinks.k1.kafka.producer.linger.ms = 1
+
+# channel
+a1.channels.c1.type = memory
+a1.channels.c1.capacity = 1000
+a1.channels.c1.transactionCapacity = 100
+
+# bind
+a1.sources.r1.channels = c1
+a1.sinks.k1.channel = c1
+```
+启动flume
+`bin/flume-ng agent -c conf/ -n a1 -f jobs/flume-kafka.conf`
+
+向被监控文件中写入数据
+`echo hello >> /opt/module/data/flume.log`
+
+# kafka监控-Kafka Monitor
+<hr style="height:1px;border:none;border-top:1px solid #555555;" />
+
+在/opt/module/下创建kafka-offset-console文件夹
+
+将上传的KafkaOffsetMonitor-assembly-0.2.0.jar包放入创建的目录下
+
+在/opt/module/kafka-offset-console目录下创建启动脚本start.sh，内容如下：
+
+```
+#!/bin/bash
+java -cp KafkaOffsetMonitor-assembly-0.2.0.jar \
+com.quantifind.kafka.offsetapp.OffsetGetterWeb \
+--offsetStorage kafka \
+--kafkaBrokers hadoop102:9092,hadoop103:9092,hadoop104:9092 \
+--kafkaSecurityProtocol PLAINTEXT \
+--zk hadoop102:2181,hadoop103:2181,hadoop104:2181 \
+--port 8086 \
+--refresh 10.seconds \
+--retain 2.days \
+--dbName offsetapp_kafka &
+```
+
+在/opt/module/kafka-offset-console目录下创建mobile-logs文件夹
+`mkdir /opt/module/kafka-offset-console/mobile-logs`
+
+启动KafkaMonitor
+./start.sh
