@@ -50,3 +50,56 @@ region会按照其所有memstore的大小顺序（由大到小）依次进行刷
 3. 到达自动刷写的时间，也会触发memstore flush。自动刷新的时间间隔由该属性进行配置hbase.regionserver.optionalcacheflushinterval（默认1小时）。
 
 4.当WAL文件的数量超过hbase.regionserver.max.logs，region会按照时间顺序依次进行刷写，直到WAL文件数量减小到hbase.regionserver.max.log以下（该属性名已经废弃，现无需手动设置，最大值为32）。
+
+# 读流程
+
+# SortedFile Compaction
+小合并：把几个合并成一个
+大合并：所有的合并成一个，清理过期数据
+
+flush时候不能删数据
+# api
+<hr style="height:1px;border:none;border-top:1px solid #555555;" />
+
+首先maven添加依赖
+```
+<dependency>
+    <groupId>org.apache.hbase</groupId>
+    <artifactId>hbase-server</artifactId>
+    <version>1.3.1</version>
+</dependency>
+
+<dependency>
+    <groupId>org.apache.hbase</groupId>
+    <artifactId>hbase-client</artifactId>
+    <version>1.3.1</version>
+</dependency>
+```
+
+#HBaseAPI
+
+####获取configuration对象
+用静态代码块，在main线程启动前就加载完成
+```
+public static Configuration conf;
+static{
+	conf = HBaseConfiguration.create();
+conf.set("hbase.zookeeper.quorum", "192.168.9.102");
+}
+```
+
+####判断表是否存在
+
+####创建表
+
+####删除表
+
+####向表中插入数据
+
+####删除多行数据
+
+####获取所有数据
+
+####获取某一行数据
+
+####获取某一行指定族列：列数据
