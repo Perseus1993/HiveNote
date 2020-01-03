@@ -22,3 +22,4 @@
 * [Hbase](HbaseMain.md)
     - [Hbase入门](Hbase1.md)
     - [Hbase进阶](Hbase2.md)
+    - [HBase MapReduce](Hbase3.md)

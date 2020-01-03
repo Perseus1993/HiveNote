@@ -89,17 +89,131 @@ conf.set("hbase.zookeeper.quorum", "192.168.9.102");
 ```
 
 ####判断表是否存在
+```java
+public static boolean isTableExists(String tableName) throws Exception{
+//        HBaseAdmin admin = new HBaseAdmin(conf);
+    Connection connection = ConnectionFactory.createConnection(conf);
+    HBaseAdmin admin = (HBaseAdmin) connection.getAdmin();
+    return admin.tableExists(tableName);
+}
+```
 
 ####创建表
+```java
+public static void createTable(String tableName, String... columnFamily) throws Exception{
+//        HBaseAdmin admin = new HBaseAdmin(conf)
+        Connection connection = ConnectionFactory.createConnection(conf);
+        HBaseAdmin admin = (HBaseAdmin) connection.getAdmin();
+        if(isTableExists(tableName)){
+            System.out.println("表已经存在");
+        }else{
+            HTableDescriptor descriptor = new HTableDescriptor(TableName.valueOf(tableName));
+            for(String str : columnFamily){
+                descriptor.addFamily(new HColumnDescriptor(str));
+            }
+            admin.createTable(descriptor);
+            System.out.println("表" + tableName + "创建成功");
+
+        }
+    }
+```
 
 ####删除表
+```java
+public static void dropTable(String tableName) throws Exception{
+        Connection connection = ConnectionFactory.createConnection(conf);
+        HBaseAdmin admin = (HBaseAdmin) connection.getAdmin();
+        if(isTableExists(tableName)){
+            admin.disableTable(tableName);
+            admin.deleteTable(tableName);
+            System.out.println("表" + tableName + "删除成功");
+        }else{
+            System.out.println("表" + tableName + "不存在");
+        }
+    }
+```
 
 ####向表中插入数据
+```java
+public static void insert(String tableName, String rowKey, String columnFamily, String column, String value) throws Exception{
+        Connection connection = ConnectionFactory.createConnection(conf);
+        Table table = connection.getTable(TableName.valueOf(tableName));
+        Put put = new Put(Bytes.toBytes(rowKey));
+        put.addColumn(Bytes.toBytes(columnFamily), Bytes.toBytes(column), Bytes.toBytes(value));
+        table.put(put);
+        table.close();
+        System.out.println("插入成功");
+
+    }
+```
 
 ####删除多行数据
+```java
+public static void deleteMulti(String tableName, String ... rows) throws Exception{
+        Connection connection = ConnectionFactory.createConnection(conf);
+        Table table = connection.getTable(TableName.valueOf(tableName));
+        List<Delete> deletes = new ArrayList<Delete>();
+        for(String row : rows){
+            Delete delete = new Delete(Bytes.toBytes(row));
+            deletes.add(delete);
+        }
+        table.delete(deletes);
+        table.close();
+    }
+```
 
 ####获取所有数据
+```java
+public static void getAllRows(String tableName) throws Exception{
+        Connection connection = ConnectionFactory.createConnection(conf);
+        Table table = connection.getTable(TableName.valueOf(tableName));
+        ResultScanner rs = table.getScanner(new Scan());
+        for(Result res : rs){
+            Cell[] cells = res.rawCells();
+            for(Cell cell : cells){
+                System.out.println("行键:" + Bytes.toString(CellUtil.cloneRow(cell)));
+                //得到列族
+                System.out.println("列族" + Bytes.toString(CellUtil.cloneFamily(cell)));
+                System.out.println("列:" + Bytes.toString(CellUtil.cloneQualifier(cell)));
+                System.out.println("值:" + Bytes.toString(CellUtil.cloneValue(cell)));
+            }
+        }
+    }
+```
 
 ####获取某一行数据
+```java
+public static void getRow(String tableName, String rowKey) throws Exception{
+       Connection connection = ConnectionFactory.createConnection(conf);
+       Table table = connection.getTable(TableName.valueOf(tableName));
+       Result res = table.get(
+               new Get(Bytes.toBytes(rowKey))
+       );
+       for(Cell cell : res.rawCells()){
+           System.out.println("行键:" + Bytes.toString(CellUtil.cloneRow(cell)));
+           System.out.println("列族" + Bytes.toString(CellUtil.cloneFamily(cell)));
+           System.out.println("列:" + Bytes.toString(CellUtil.cloneQualifier(cell)));
+           System.out.println("值:" + Bytes.toString(CellUtil.cloneValue(cell)));
+           System.out.println("时间戳:" + cell.getTimestamp());
+
+       }
+   }
+```
 
 ####获取某一行指定族列：列数据
+```java
+public static void getRowQualifier(String tableName, String rowKey, String family, String qualifier) throws Exception{
+        Connection connection = ConnectionFactory.createConnection(conf);
+        Table table = connection.getTable(TableName.valueOf(tableName));
+
+        Get get = new Get(Bytes.toBytes(rowKey));
+        get.addColumn(Bytes.toBytes(family), Bytes.toBytes(qualifier));
+        Result result = table.get(get);
+        for(Cell cell : result.rawCells()){
+            System.out.println("行键:" + Bytes.toString(result.getRow()));
+            System.out.println("列族" + Bytes.toString(CellUtil.cloneFamily(cell)));
+            System.out.println("列:" + Bytes.toString(CellUtil.cloneQualifier(cell)));
+            System.out.println("值:" + Bytes.toString(CellUtil.cloneValue(cell)));
+        }
+    }
+```
