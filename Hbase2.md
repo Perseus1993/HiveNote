@@ -53,6 +53,13 @@ region会按照其所有memstore的大小顺序（由大到小）依次进行刷
 
 # 读流程
 
+1）Client先访问zookeeper，获取hbase:meta表位于哪个Region Server。
+2）访问对应的Region Server，获取hbase:meta表，根据读请求的namespace:table/rowkey，查询出目标数据位于哪个Region Server中的哪个Region中。并将该table的region信息以及meta表的位置信息缓存在客户端的meta cache，方便下次访问。
+3）与目标Region Server进行通讯；
+4）分别在Block Cache（读缓存），MemStore和Store File（HFile）中查询目标数据，并将查到的所有数据进行合并。此处所有数据是指同一条数据的不同版本（time stamp）或者不同的类型（Put/Delete）。
+5） 将从文件中查询到的数据块（Block，HFile数据存储单元，默认大小为64KB）缓存到Block Cache。
+6）将合并后的最终结果返回给客户端。
+
 # SortedFile Compaction
 小合并：把几个合并成一个
 大合并：所有的合并成一个，清理过期数据
