@@ -1,0 +1,831 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>HBase MapReduce · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-chapter-fold/chapter-fold.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-advanced-emoji/emoji-website.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="exp.html" />
+    
+    
+    <link rel="prev" href="Hbase2.html" />
+    
+
+    <style>
+    @media only screen and (max-width: 640px) {
+        .book-header .hidden-mobile {
+            display: none;
+        }
+    }
+    </style>
+    <script>
+        window["gitbook-plugin-github-buttons"] = {"buttons":[{"user":"Perseus1993","type":"follow","width":"230","count":false}]};
+    </script>
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="config,md">
+            
+                <span>
+            
+                    
+                    集群配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="hdoopMian.md">
+            
+                <span>
+            
+                    
+                    Hadoop
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="hadoop1.html">
+            
+                <a href="hadoop1.html">
+            
+                    
+                    Hadoop安装与配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="hadoopTest.html">
+            
+                <a href="hadoopTest.html">
+            
+                    
+                    HDFS的读写流程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="hadoop.html">
+            
+                <a href="hadoop.html">
+            
+                    
+                    Hadoop面试题目
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="1.html">
+            
+                <a href="1.html">
+            
+                    
+                    Hive
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="1_1.html">
+            
+                <a href="1_1.html">
+            
+                    
+                    Hive概述
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="1_2.html">
+            
+                <a href="1_2.html">
+            
+                    
+                    架构原理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="2.html">
+            
+                <a href="2.html">
+            
+                    
+                    Hive安装
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="3.html">
+            
+                <a href="3.html">
+            
+                    
+                    Hive-DDL
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="4.html">
+            
+                <a href="4.html">
+            
+                    
+                    Hive-DML
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="5.html">
+            
+                <a href="5.html">
+            
+                    
+                    Hive-查询
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.7" data-path="6.html">
+            
+                <a href="6.html">
+            
+                    
+                    Hive-函数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.8" data-path="7.html">
+            
+                <a href="7.html">
+            
+                    
+                    压缩&存储
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.9" data-path="8.html">
+            
+                <a href="8.html">
+            
+                    
+                    调优
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="flumeMain.html">
+            
+                <a href="flumeMain.html">
+            
+                    
+                    flume
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="flume.html">
+            
+                <a href="flume.html">
+            
+                    
+                    flume入门
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="flume2.html">
+            
+                <a href="flume2.html">
+            
+                    
+                    flume进阶/企业开发案例
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="kafkaMain.html">
+            
+                <a href="kafkaMain.html">
+            
+                    
+                    Kafka
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="kafka2.html">
+            
+                <a href="kafka2.html">
+            
+                    
+                    kafka入门
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="kafkaMain.html">
+            
+                <a href="kafkaMain.html">
+            
+                    
+                    Azkaban
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1" data-path="kafka2.html">
+            
+                <a href="kafka2.html">
+            
+                    
+                    kafka入门
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="HbaseMain.html">
+            
+                <a href="HbaseMain.html">
+            
+                    
+                    Hbase
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.8.1" data-path="Hbase1.html">
+            
+                <a href="Hbase1.html">
+            
+                    
+                    Hbase入门
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.2" data-path="Hbase2.html">
+            
+                <a href="Hbase2.html">
+            
+                    
+                    Hbase进阶
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.8.3" data-path="Hbase3.html">
+            
+                <a href="Hbase3.html">
+            
+                    
+                    HBase MapReduce
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="exp.html">
+            
+                <a href="exp.html">
+            
+                    
+                    项目经验
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="." >HBase MapReduce</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="hbase-mr">HBase MR</h1>
+<p>&#x53EF;&#x4EE5;&#x901A;&#x8FC7;HBase&#x7684;java API&#x6765;&#x5B9E;&#x73B0;&#x64CD;&#x4F5C;Map MapReduce</p>
+<h1 id="&#x5B98;&#x65B9;&#x6848;&#x4F8B;">&#x5B98;&#x65B9;&#x6848;&#x4F8B;</h1>
+<h4 id="&#x6848;&#x4F8B;1">&#x6848;&#x4F8B;1</h4>
+<p>&#x5148;&#x5BFC;&#x5165;&#x73AF;&#x5883;&#x53D8;&#x91CF;</p>
+<pre><code class="lang-shell">$ export HBASE_HOME=/opt/module/hbase
+$ export HADOOP_HOME=/opt/module/hadoop-2.7.2
+</code></pre>
+<p>&#x914D;&#x7F6E;&#x4E0B;hadoop-env.sh
+<code>export HADOOP_CLASSPATH=$HADOOP_CLASSPATH:/opt/module/hbase/lib/*</code></p>
+<p>&#x6765;&#x5230;HBase&#x76EE;&#x5F55;&#xFF0C;&#x8FD0;&#x884C;&#x8BED;&#x53E5;&#x6765;&#x5224;&#x65AD; student&#x6709;&#x591A;&#x5C11;&#x884C;</p>
+<p><code>/opt/module/hadoop-2.7.2/bin/yarn jar lib/hbase-server-1.3.1.jar rowcounter student</code></p>
+<h4 id="&#x6848;&#x4F8B;2-&#x4F7F;&#x7528;mr&#x628A;&#x672C;&#x5730;&#x6570;&#x636E;&#x5BFC;&#x5165;hbase">&#x6848;&#x4F8B;2 &#x4F7F;&#x7528;MR&#x628A;&#x672C;&#x5730;&#x6570;&#x636E;&#x5BFC;&#x5165;HBase</h4>
+<p>&#x521B;&#x5EFA;&#x4E00;&#x4E2A;tsv&#x6587;&#x4EF6; fruit.tsv
+<code>1001    Apple    Red
+1002    Pear    Yellow
+1003    Pineapple    Yellow</code></p>
+<p>&#x628A;&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x5230;HDFS&#x6839;&#x76EE;&#x5F55;</p>
+<p>&#x521B;&#x5EFA;HBase&#x8868;
+<code>create &apos;fruit&apos;, &apos;info&apos;</code></p>
+<p>&#x6267;&#x884C;MR &#x5230; HBase&#x7684;fruit&#x8868;&#x4E2D;</p>
+<pre><code>/opt/module/hadoop-2.7.2/bin/yarn jar lib/hbase-server-1.3.1.jar importtsv \
+-Dimporttsv.columns=HBASE_ROW_KEY,info:name,info:color fruit \
+hdfs://hadoop102:9000/fruit.tsv
+</code></pre><h1 id="&#x81EA;&#x5B9A;&#x4E49;hbase-mapreduce1">&#x81EA;&#x5B9A;&#x4E49;HBase-MapReduce1</h1>
+<p>&#x9700;&#x6C42;&#xFF1A;&#x5C06;&#x672C;&#x5730;&#x8868;fruit&#x7684;&#x4E00;&#x90E8;&#x5206;&#x6570;&#x636E;&#x901A;&#x8FC7;MR&#x4F20;&#x5230;fruit_mr&#x8868;&#x4E2D;</p>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReadFruitMapper</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">TableMapper</span>&lt;<span class="hljs-title">ImmutableBytesWritable</span>, <span class="hljs-title">Put</span>&gt; </span>{
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">map</span><span class="hljs-params">(ImmutableBytesWritable key, Result value, Context context)</span>
+    <span class="hljs-keyword">throws</span> IOException, InterruptedException </span>{
+    <span class="hljs-comment">//&#x5C06;fruit&#x7684;name&#x548C;color&#x63D0;&#x53D6;&#x51FA;&#x6765;&#xFF0C;&#x76F8;&#x5F53;&#x4E8E;&#x5C06;&#x6BCF;&#x4E00;&#x884C;&#x6570;&#x636E;&#x8BFB;&#x53D6;&#x51FA;&#x6765;&#x653E;&#x5165;&#x5230;Put&#x5BF9;&#x8C61;&#x4E2D;&#x3002;</span>
+        Put put = <span class="hljs-keyword">new</span> Put(key.get());
+        <span class="hljs-comment">//&#x904D;&#x5386;&#x6DFB;&#x52A0;column&#x884C;</span>
+        <span class="hljs-keyword">for</span>(Cell cell: value.rawCells()){
+            <span class="hljs-comment">//&#x6DFB;&#x52A0;/&#x514B;&#x9686;&#x5217;&#x65CF;:info</span>
+            <span class="hljs-keyword">if</span>(<span class="hljs-string">&quot;info&quot;</span>.equals(Bytes.toString(CellUtil.cloneFamily(cell)))){
+                <span class="hljs-comment">//&#x6DFB;&#x52A0;/&#x514B;&#x9686;&#x5217;&#xFF1A;name</span>
+                <span class="hljs-keyword">if</span>(<span class="hljs-string">&quot;name&quot;</span>.equals(Bytes.toString(CellUtil.cloneQualifier(cell)))){
+                    <span class="hljs-comment">//&#x5C06;&#x8BE5;&#x5217;cell&#x52A0;&#x5165;&#x5230;put&#x5BF9;&#x8C61;&#x4E2D;</span>
+                    put.add(cell);
+                    <span class="hljs-comment">//&#x6DFB;&#x52A0;/&#x514B;&#x9686;&#x5217;:color</span>
+                }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(<span class="hljs-string">&quot;color&quot;</span>.equals(Bytes.toString(CellUtil.cloneQualifier(cell)))){
+                    <span class="hljs-comment">//&#x5411;&#x8BE5;&#x5217;cell&#x52A0;&#x5165;&#x5230;put&#x5BF9;&#x8C61;&#x4E2D;</span>
+                    put.add(cell);
+                }
+            }
+        }
+        <span class="hljs-comment">//&#x5C06;&#x4ECE;fruit&#x8BFB;&#x53D6;&#x5230;&#x7684;&#x6BCF;&#x884C;&#x6570;&#x636E;&#x5199;&#x5165;&#x5230;context&#x4E2D;&#x4F5C;&#x4E3A;map&#x7684;&#x8F93;&#x51FA;</span>
+        context.write(key, put);
+    }
+}
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FruitDriver</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Tool</span> </span>{
+    <span class="hljs-keyword">private</span> Configuration configuration = <span class="hljs-keyword">null</span>;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">run</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception </span>{
+        <span class="hljs-comment">//&#x83B7;&#x53D6;job</span>
+        Job job = Job.getInstance(configuration);
+        <span class="hljs-comment">//&#x8BBE;&#x7F6E;&#x9A71;&#x52A8;&#x7C7B;&#x8DEF;&#x5F84;</span>
+        job.setJarByClass(FruitDriver.class);
+        <span class="hljs-comment">//&#x8BBE;&#x7F6E;mapper</span>
+        job.setMapperClass(FruitMapper.class);
+        job.setMapOutputKeyClass(LongWritable.class);
+        job.setOutputValueClass(Text.class);
+        <span class="hljs-comment">//&#x8BBE;&#x7F6E;reducer</span>
+        TableMapReduceUtil.initTableReducerJob(args[<span class="hljs-number">1</span>], FruitReducer.class, job);
+        <span class="hljs-comment">//&#x8BBE;&#x7F6E;&#x8F93;&#x51FA;kv</span>
+        <span class="hljs-comment">//&#x8F93;&#x51FA;&#x8DEF;&#x5F84;</span>
+        FileInputFormat.setInputPaths(job, <span class="hljs-keyword">new</span> Path(args[<span class="hljs-number">0</span>]));
+        <span class="hljs-comment">//&#x63D0;&#x4EA4;</span>
+        Boolean result = job.waitForCompletion(<span class="hljs-keyword">true</span>);
+        <span class="hljs-keyword">return</span> result ?<span class="hljs-number">0</span>:<span class="hljs-number">1</span>;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setConf</span><span class="hljs-params">(Configuration conf)</span> </span>{
+        configuration = conf;
+
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Configuration <span class="hljs-title">getConf</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> configuration;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>{
+        <span class="hljs-keyword">try</span>{
+            Configuration configuration = <span class="hljs-keyword">new</span> Configuration();
+            <span class="hljs-keyword">int</span> run = ToolRunner.run(configuration, <span class="hljs-keyword">new</span> FruitDriver(), args);
+            System.exit(run);
+        }<span class="hljs-keyword">catch</span> (Exception e){
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FruitReducer</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">TableReducer</span>&lt;<span class="hljs-title">LongWritable</span>, <span class="hljs-title">Text</span>, <span class="hljs-title">NullWritable</span>&gt; </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">reduce</span><span class="hljs-params">(LongWritable key, Iterable&lt;Text&gt; values, Context context)</span> <span class="hljs-keyword">throws</span> IOException, InterruptedException </span>{
+        <span class="hljs-keyword">for</span>(Text value : values){
+            String[] fields = value.toString().split(<span class="hljs-string">&quot;\t&quot;</span>);
+
+            Put put =<span class="hljs-keyword">new</span> Put(Bytes.toBytes(fields[<span class="hljs-number">0</span>]));
+            <span class="hljs-comment">//&#x4E24;&#x4E2A;&#x5217;</span>
+            put.addColumn(Bytes.toBytes(<span class="hljs-string">&quot;info&quot;</span>), Bytes.toBytes(<span class="hljs-string">&quot;name&quot;</span>), Bytes.toBytes(fields[<span class="hljs-number">1</span>]));
+            put.addColumn(Bytes.toBytes(<span class="hljs-string">&quot;info&quot;</span>), Bytes.toBytes(<span class="hljs-string">&quot;color&quot;</span>), Bytes.toBytes(fields[<span class="hljs-number">2</span>]));
+            context.write(NullWritable.get(), put);
+        }
+    }
+}
+</code></pre>
+<h1 id="&#x81EA;&#x5B9A;&#x4E49;hbase-mapreduce2">&#x81EA;&#x5B9A;&#x4E49;HBase-MapReduce2</h1>
+<p>&#x9700;&#x6C42;&#xFF1A;&#x901A;&#x8FC7;MR&#x5C06;fruit&#x7684;&#x4E00;&#x90E8;&#x5206;&#x6570;&#x636E;&#x901A;&#x8FC7;MR&#x4F20;&#x5230;fruit2&#x8868;&#x4E2D;</p>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Fruit2Mapper</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">TableMapper</span>&lt;<span class="hljs-title">ImmutableBytesWritable</span>, <span class="hljs-title">Put</span>&gt; </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">map</span><span class="hljs-params">(ImmutableBytesWritable key, Result value, Context context)</span> <span class="hljs-keyword">throws</span> IOException, InterruptedException </span>{
+        Put put = <span class="hljs-keyword">new</span> Put(key.get());
+
+        <span class="hljs-keyword">for</span>(Cell cell : value.rawCells()){
+            <span class="hljs-comment">//&#x5224;&#x65AD;&#x5F53;&#x524D;cell&#x662F;&#x5426;&#x662F;name&#x5217;</span>
+            <span class="hljs-keyword">if</span>(<span class="hljs-string">&quot;name&quot;</span>.equals(Bytes.toString(CellUtil.cloneQualifier(cell)))){
+                put.add(cell);
+            }
+        }
+        context.write(key, put);
+    }
+}
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Fruit2Reducer</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">TableReducer</span>&lt;<span class="hljs-title">ImmutableBytesWritable</span>, <span class="hljs-title">Put</span>, <span class="hljs-title">NullWritable</span>&gt; </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">reduce</span><span class="hljs-params">(ImmutableBytesWritable key, Iterable&lt;Put&gt; values, Context context)</span> <span class="hljs-keyword">throws</span> IOException, InterruptedException </span>{
+
+        <span class="hljs-keyword">for</span>(Put put : values){
+            context.write(NullWritable.get(), put);
+
+        }
+    }
+}
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Fruit2driver</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Tool</span> </span>{
+    <span class="hljs-keyword">private</span> Configuration configuration= <span class="hljs-keyword">null</span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">run</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception </span>{
+        Job job = Job.getInstance();
+
+        job.setJarByClass(Fruit2driver.class);
+
+        <span class="hljs-comment">//&#x8BBE;&#x7F6E;mapper&#x8F93;&#x51FA;kv&#x7C7B;&#x578B;</span>
+        TableMapReduceUtil.initTableMapperJob(args[<span class="hljs-number">0</span>],
+                <span class="hljs-keyword">new</span> Scan(),
+                Fruit2Mapper.class,
+                ImmutableBytesWritable.class,
+                Put.class,
+                job
+                );
+        <span class="hljs-comment">//&#x8BBE;&#x7F6E;reducer&#x548C;&#x8F93;&#x51FA;&#x7684;&#x8868;</span>
+        TableMapReduceUtil.initTableReducerJob(args[<span class="hljs-number">1</span>],
+                FruitReducer.class,
+                job
+        );
+
+        <span class="hljs-keyword">boolean</span> result = job.waitForCompletion(<span class="hljs-keyword">true</span>);
+
+
+        <span class="hljs-keyword">return</span> result? <span class="hljs-number">0</span> : <span class="hljs-number">1</span>;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setConf</span><span class="hljs-params">(Configuration conf)</span> </span>{
+        configuration = conf;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Configuration <span class="hljs-title">getConf</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>{
+        <span class="hljs-keyword">try</span>{
+            Configuration configuration = <span class="hljs-keyword">new</span> Configuration();
+            ToolRunner.run(configuration, <span class="hljs-keyword">new</span> Fruit2driver(), args);
+        }<span class="hljs-keyword">catch</span> (Exception e){
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="Hbase2.html" class="navigation navigation-prev " aria-label="Previous page: Hbase进阶">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="exp.html" class="navigation navigation-next " aria-label="Next page: 项目经验">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"HBase MapReduce","level":"1.8.3","depth":2,"next":{"title":"项目经验","level":"1.9","depth":1,"path":"exp.md","ref":"exp.md","articles":[]},"previous":{"title":"Hbase进阶","level":"1.8.2","depth":2,"path":"Hbase2.md","ref":"Hbase2.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["github-buttons","chapter-fold","advanced-emoji","livereload"],"pluginsConfig":{"chapter-fold":{},"livereload":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"github-buttons":{"buttons":[{"user":"Perseus1993","type":"follow","width":"230","count":false}]},"advanced-emoji":{"embedEmojis":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Hbase3.md","mtime":"2020-01-03T22:14:15.681Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-01-06T12:58:22.978Z"},"basePath":".","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="gitbook/gitbook.js"></script>
+    <script src="gitbook/theme.js"></script>
+    
+        
+        <script src="gitbook/gitbook-plugin-github-buttons/plugin.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-chapter-fold/chapter-fold.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

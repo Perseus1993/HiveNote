@@ -4,6 +4,7 @@
 * [集群配置](config,md)
 * [Hadoop](hdoopMian.md)
     - [Hadoop安装与配置](hadoop1.md)
+    - [HDFS的读写流程](hadoopTest.md)
     - [Hadoop面试题目](hadoop.md)
 * [Hive](1.md)
     * [Hive概述](1_1.md)
@@ -26,3 +27,4 @@
     - [Hbase入门](Hbase1.md)
     - [Hbase进阶](Hbase2.md)
     - [HBase MapReduce](Hbase3.md)
+* [项目经验](exp.md)
