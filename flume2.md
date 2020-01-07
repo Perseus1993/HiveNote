@@ -637,3 +637,46 @@ public class MySink extends AbstractSink implements Configurable {
     }
 }
 ```
+#### Flume内存优化
+
+如果启动消费后抛出异常
+```
+ERROR hdfs.HDFSEventSink: process failed
+java.lang.OutOfMemoryError: GC overhead limit exceeded
+```
+
+需要在每台服务器的flume-env.sh增加
+
+`export JAVA_OPTS="-Xms100m -Xmx2000m -Dcom.sun.management.jmxremote"`
+
+JVM heap一般设置为4G或更高，部署在单独的服务器上（4核8线程16G内存）
+-Xmx与-Xms最好设置一致，减少内存抖动带来的性能影响，如果设置不一致容易导致频繁fullgc
+
+#### 组件
+1）FileChannel和MemoryChannel区别
+
+MemoryChannel传输数据速度更快，但因为数据保存在JVM的堆内存中，Agent进程挂掉会导致数据丢失，适用于对数据质量要求不高的需求。
+
+FileChannel传输速度相对于Memory慢，但数据安全保障高，Agent进程挂掉也可以从失败中恢复数据。
+
+2）FileChannel优化
+
+通过配置dataDirs指向多个路径，每个路径对应不同的硬盘，增大Flume吞吐量。
+
+3）Sink：HDFS Sink
+
+（1）HDFS存入大量小文件，有什么影响？
+
+元数据层面：每个小文件都有一份元数据，其中包括文件路径，文件名，所有者，所属组，权限，创建时间等，这些信息都保存在Namenode内存中。所以小文件过多，会占用Namenode服务器大量内存，影响Namenode性能和使用寿命
+
+计算层面：默认情况下MR会对每个小文件启用一个Map任务计算，非常影响计算性能。同时也影响磁盘寻址时间。
+
+	（2）HDFS小文件处理
+
+官方默认的这三个参数配置写入HDFS后会产生小文件，hdfs.rollInterval、hdfs.rollSize、hdfs.rollCount
+
+基于以上hdfs.rollInterval=3600，hdfs.rollSize=134217728，hdfs.rollCount =0几个参数综合作用，效果如下：
+
+（1）文件在达到128M时会滚动生成新文件
+
+（2）文件创建超3600秒时会滚动生成新文件

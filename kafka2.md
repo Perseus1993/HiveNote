@@ -170,14 +170,17 @@ topic是逻辑上的，partition是物理上的，每个partition对应一个log
 ####数据可靠性的保证
 
 每个partition收到生产者给的数据都会反馈ack，否则生产者重发
+
 全部follower收到数据后再发送ack
+
 为了保证个别floower挂掉后没法ack,用ISR
+
 新版的差值已经remove了
 
 应答机制：
 0 不用等broker ack
 1等ack leader成功就ack
--1 等待全部落盘
+-1 等待isr里面的副本全部落盘
 
 故障处理细节
 LEO 每个副本的最后一个offset
